@@ -1,0 +1,86 @@
+prtunnel 0.2.7
+(Last updated: March 12, 2006)
+
+prtunnel tunnels TCP connections through an HTTP or SOCKS5 proxy server.
+It is useful if you're behind such a proxy and want to use a program
+that doesn't have native proxy support.
+
+It's developed on Slackware Linux and OpenBSD (both x86), and should work
+on any other Unix-like system.
+
+prtunnel was written by Josh Beam <josh@joshbeam.com> and is distributed under
+a BSD-style license (see prtunnel.h or any other source file for the exact
+terms). The latest version can be found at
+http://joshbeam.com/software/prtunnel.php
+
+
+Usage
+-----
+  prtunnel [options] <local port> [<remote host> <remote port>]
+
+<local port> is the local port you want prtunnel to listen to; <remote host>
+is the name or address of the remote system you want to connect to;
+<remote port> is the port of the service you want to use on <remote host>.
+
+If run without the <remote host> and <remote port> arguments, prtunnel
+will accept SOCKS4/SOCKS5 commands from the client to determine the
+remote server to connect to.
+
+Options:
+  -D                Run as a daemon. prtunnel will run in the background
+                    and accept multiple TCP connections with this option.
+  -V                Verbose output (prints all data transferred to standard
+                    output)
+  -c                Use color to differentiate between incoming and outgoing
+                    data in verbose output; without this, each line of outgoing
+                    verbose output will begin with ">>> " and incoming output
+                    with "<<< "
+  -6                Enables IPv6 mode. This doesn't affect the way outgoing
+                    connections are made with the direct/direct6 tunneling
+                    modes; direct will always connect with IPv4 and direct6
+                    will always connect with IPv6.
+  -t <tunnel mode>  Set tunneling mode; http (default), socks5, direct and
+                    direct6 are supported. With http and socks5, you must
+                    specify the address of an http/socks5 proxy to use.
+                    direct will make prtunnel connect directly to the remote
+                    host specified; direct6 does the same, but with IPv6
+                    instead of IPv4.
+  -H <proxy host>   Name or address of the proxy server you wish to use
+  -P <proxy port>   Port that the proxy server uses (8080 default for http,
+                    1080 default for socks5)
+  -T <address>      Add a trusted address. For security reasons, only localhost
+                    is trusted by default. Only connections from trusted
+                    addresses are allowed. You can specify an address itself
+                    (like 10.0.0.1), or in the form of address/bitcheck, where
+                    bitcheck is the number of leading bits to compare; for
+                    example, 10.0.0.0/24 would mean any address in the range
+                    of 10.0.0.0 to 10.0.0.255.
+  -u <username>     Set proxy authentication username
+  -p <password>     Set proxy authentication password
+  --password-prompt
+                    Prompt for proxy username and password
+  --http-1.0        Use HTTP/1.0 instead of HTTP/1.1 for HTTP connections
+  --telnet-keep-alive <interval>
+                    Causes prtunnel to send keep-alive data at the
+                    specified interval, using the telnet NOP command
+  --crlf-keep-alive <interval>
+                    Causes prtunnel to send keep-alive data at the
+                    specified interval, using a CRLF
+  --irc-auto-pong   Causes prtunnel to automatically respond to PING commands
+                    sent by IRC servers
+  --timeout <time>
+                    Allows you to set a client socket timeout; if no data
+                    is recieved from the client for <time> seconds, the
+                    connection will be closed
+  --server-timeout <time>
+                    Allows you to set a server socket timeout; if no data
+                    is recieved from the remote host for <time> seconds,
+                    the connection will be closed
+  -h, --help        Print help message
+  -v, --version     Show version information
+
+Here's an example:
+  prtunnel -H proxy 6667 irc.freenode.net 6667
+After starting prtunnel like this, you could then point an IRC client to
+127.0.0.1, and prtunnel will attempt to connect you to irc.freenode.net
+via the HTTP proxy server on a system named "proxy".

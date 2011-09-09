@@ -1,0 +1,305 @@
+Sun Mar 12 2006  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Made prt_context_list_resize() not attempt to do malloc(0)
+	  when the size parameter is 0, which was causing problems on some
+	  systems. Thanks to Jean-Francois Pirus for sending a fix for this.
+	* prtunnel.h, proxy.c, direct.c, direct6.c, http.c, socks5.c:
+	  Made the protocol-specific connect functions set the server timeout
+	  so that the program doesn't hang if a server timeout is specified and
+	  a proxy doesn't respond.
+	* main.c, prtunnel.1, README: Updated version/date.
+	* prtunnel: Releasing 0.2.7.
+
+Mon Jan 09 2006  Josh Beam  <josh@joshbeam.com>
+	* main.c, prtunnel.1, README: Updated version/date.
+	* prtunnel: Releasing 0.2.6.
+
+Sun Jan 08 2006  Josh Beam  <josh@joshbeam.com>
+	* prtunnel: Applied a patch from Frediano Ziglio that modifies
+	  most of the source files to improve win32 support, adds a
+	  Visual Studio NMAKE file, and makes some other changes.
+	* getopt.c, getopt.h: New files containing a simple getopt function
+	  to be used on win32.
+
+Sun May 15 2005  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.1, README: Updated date.
+	* prtunnel: Releasing 0.2.5.
+
+Sun May 08 2005  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Applied patch from Vasil Dimov that makes the local_socks
+	  variable in prt_tcp_handle_connection() initialized to 0. This fixes
+	  a problem where SOCKS data would sometimes be sent to clients that
+	  were not using SOCKS to connect.
+	* connect.c, direct.c, direct6.c, http.c,main.c, proxy.c, prtunnel.h,
+	  socks5.c: Replaced all calls to read(2) with calls to recv(2). Made
+	  some changes to help with compiling for win32 systems.
+	* main.c, prtunnel.1, README: Updated version.
+
+Tue Jun 29 2004  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Added missing free(readfds) call in prt_tcp_loop().
+	* main.c, README, prtunnel.1: Updated version.
+	* prtunnel: Releasing 0.2.4. Thanks to Ulrik Petersen for reporting
+	  and help in debugging crashes caused by the bugs mentioned in the
+	  last ChangeLog update.
+
+Sun Jun 27 2004  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Fixed an overrun problem with prt_context_list_resize()
+	  when making a prt_context_list smaller. Fixed possible fd_set
+	  overflow.
+	* http.c, socks5.c: Changed all gethostbyname calls to gethostbyname2
+	  calls when IPv6 is enabled.
+
+Thu Jun 10 2004  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Made prt_tcp_handle_connection call loop until a successful
+	  connection is made when not in daemon mode.
+	* main.c, README, prtunnel.1: Updated version.
+	* prtunnel: Releasing 0.2.3.
+
+Sun Jun 06 2004  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Rewrote much of the connection handling code over the past
+	  few days. All connections are now handled in a single process.
+	* main.c: Got rid of --max-processes option, since it's now obsolete.
+	* README, prtunnel.1: Removed --max-processes stuff.
+
+Sat May 22 2004  Josh Beam  <josh@joshbeam.com>
+	* prtunnel: Releasing 0.2.2.
+
+Fri May 21 2004  Josh Beam  <josh@joshbeam.com>
+	* main.c: Applied a patch (with some modifications by myself) from
+	  Diaconescu Bogdan which adds a proxy username and password prompt.
+	* README, prtunnel.1: Updated with info on the --password-prompt
+	  option and updated the prtunnel web page URL.
+
+Sat Sep 06 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel: Releasing 0.2.1.
+
+Wed Sep 03 2003  Josh Beam  <josh@joshbeam.com>
+	* http.c: Changed read_byte extern prototype from returning char (as
+	  the function used to) to returning int (as it now does).
+	* proxy.c, prtunnel.h: Added missing #ifdef IPV6 stuff. Thanks to
+	  Daniel Kluge for sending a patch.
+
+Wed Aug 13 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Made prt_tcp_loop return -1 if socks_method fails.
+	  Made daemon process in prt_tcp_loop close context->localfd if
+	  it successfully forks a child process to handle the connection.
+	* prtunnel: Releasing 0.2.0.
+
+Tue Aug 12 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Removed unused arguments from prt_tcp_loop definition.
+	  Made accept call IPv6 compatible and added context->sockaddr_len
+	  initialization before accept call.
+	  Added missing close call after recieving a connection from a
+	  non-trusted address.
+	  Fixed broken get_seconds function.
+	* main.c, proxy.c: Changed keepalive variables from int to
+	  unsigned long.
+
+Mon Aug 11 2003  Josh Beam  <josh@joshbeam.com>
+	* http.c: Added use_http_1_0 argument to http_negotiate function,
+	  instead of having http_negotiate access the flags directly.
+
+Tue Aug 05 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Added proper memory allocation error handling in
+	  the socks_method function, and #if 0'd out some udp functions
+	  that aren't used yet.
+
+Mon Jul 14 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel: Massive code cleanups. The proxy.c file is basically
+	  being completely rewritten; this will take a while to finish.
+	  The prt_context struct was added, and the code for all protocols
+	  now uses it.
+
+Sat Jul 05 2003  Josh Beam  <josh@joshbeam.com>
+	* README, prtunnel.1: Documented --timeout and --server-timeout.
+	* prtunnel: Releasing 0.1.8.
+
+Fri Jul 04 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, main.c: Added --server-timeout option.
+
+Tue Jul 01 2003  Josh Beam  <josh@joshbeam.com>
+	* socks5.c: Added "Bad response from SOCKS5 server" error messages.
+
+Fri Jun 20 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, main.c: Added --timeout option.
+
+Wed Jun 18 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Fixed is_trusted_address() IPv6 handling. Before, it would
+	  return 1 (true) if the first four bytes of an address matched those
+	  of a trusted address, which worked as expected for IPv4 but not IPv6.
+	* proxy.c, main.c: Added max-processes stuff.
+	* README, prtunnel.1: Documented max-processes stuff.
+	* main.c: Fixed segfault when specifying an option that takes an argument
+	  but there aren't enough arguments given.
+	* prtunnel: Releasing 0.1.7.
+
+Wed Apr 02 2003  Josh Beam  <josh@joshbeam.com>
+	* http.c: Put "Host" line in HTTP/1.1 commands.
+	* prtunnel: Releasing 0.1.6.
+
+Tue Apr 01 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, http.c, socks5.c, Makefile: Removed #define _GNU_SOURCE from
+	  the C source files and added -D_GNU_SOURCE to the Makefile's CFLAGS.
+
+Fri Mar 28 2003  Josh Beam  <josh@joshbeam.com>
+	Applied patch from ZIGLIO Frediano, with some minor changes by me, that
+	did the following:
+	* connect.c: Added #include <string.h>, changed read_byte to return int
+	  and changed its char c variable to unsigned char c.
+	* http.c, proxy.c: Added #define _GNU_SOURCE.
+	* main.c: Allow one non-option argument to be given, setting remotehost
+	  to NULL and remoteport to 0.
+	* proxy.c: Added socks_method and socks_method_connected functions,
+	  which accept and respond to socks commands if there's no predefined
+	  remotehost.
+	* socks5.c: Added #define _GNU_SOURCE and #include <string.h>.
+
+Thu Mar 20 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Removed commented out close(2) call.
+	* prtunnel: Releasing 0.1.5, finally.
+
+Sat Mar 15 2003  Josh Beam  <josh@joshbeam.com>
+	* http.c, proxy.c: Changed second argument of shutdown(2) calls
+	  to SHUT_RDWR define instead of using an integer directly.
+
+Wed Mar 12 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.h, http.c, main.c: Added PRT_HTTP_1_0 flag, which, when
+	  set, causes the HTTP code to use HTTP/1.0 instead of HTTP/1.1.
+	* http.c, proxy.c: Applied patch from Ury N. Stankevich that changes
+	  the HTTP commands to HTTP/1.1 by default and adds shutdown(2) calls
+	  before close(2) calls where needed.
+
+Tue Mar 11 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.h, proxy.c, main.c: Added PRT_KEEPALIVE_CRLF define
+	  and put it to use. This will use a carriage return plus line feed
+	  for keep-alive data.
+	* prtunnel.h, proxy.c: Made bitcheck variable a signed int and use
+	  a value of -1 to mean no check. This fixes a problem that wouldn't
+	  allow a bitcheck of 0 to work. Thanks to Ury N. Stankevich for
+	  pointing out this problem.
+
+Mon Feb 10 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Made keep-alive function send type-specific data and other
+	  minor changes.
+	* prtunnel: Releasing 0.1.4.
+
+Sun Feb 09 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, prtunnel.h: keepalive_type variable added to proxy.c and
+	  its PRT_KEEPALIVE_TELNET define added to prtunnel.h.
+	* everywhere:  --keep-alive option changed to --telnet-keep-alive.
+
+Fri Feb 07 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, main.c: Added --keep-alive option and the code needed
+	  to use it.
+	* documentation: Mention --keep-alive option.
+
+Thu Feb 06 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.h, main.c: Added PRT_IRC_AUTOPONG flag and
+	  --irc-auto-pong option to enable it.
+	* proxy.c: Added check_incoming_data function for performing actions
+	  when certain data is recieved; currently just handles IRC PINGs.
+	* documentation: Added info on --irc-auto-pong option.
+
+Wed Feb 05 2003  Josh Beam  <josh@joshbeam.com>
+	* documentation: Minor stuff.
+	* proxy.c: Ditto.
+	* prtunnel: Releasing 0.1.3.
+
+Tue Feb 04 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Added SIGINT handler to close listening socket when
+	  quitting and made the exiting parent connection process close it
+	  if not in daemon mode.
+	* http.c, socks5.c: Changed to connect with IPv6 if the IPv6 flag
+	  is set.
+	* README, prtunnel.1: Describe -6 option for IPv6 use.
+
+Mon Feb 03 2003  Josh Beam  <josh@joshbeam.com>
+	* README, prtunnel.1: Slight changes to description paragraphs.
+
+Thu Jan 30 2003  Josh Beam  <josh@joshbeam.com>
+	* main.c, proxy.c: Did a whole bunch of stuff to support IPv6.
+
+Tue Jan 28 2003  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.h: Added PRT_IPV6 flag.
+	* documentation: Very slight changes.
+
+Mon Jan 27 2003  Josh Beam  <josh@joshbeam.com>
+	* connect.c: Added establish_connection6 function, which is an IPv6
+	  version of establish_connection.
+	* direct6.c: New direct IPv6 tunneling mode; allows for tunneling of
+	  connections from IPv4 clients to IPv6 servers, for example.
+	* documentation: Now mentions the direct6 mode.
+
+Thu Jan 09 2003  Josh Beam  <josh@joshbeam.com>
+	* http.c: send(2) was only called for the non-authorization CONNECT.
+	  No need to explain how stupid this was. Also added a couple of
+	  error messages that should help us find problems with connecting.
+	* prtunnel: Releasing 0.1.2.
+
+Mon Jan 06 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Ugh. Multiply sizeof(struct trusted_address) by
+	  num_trust_addrs PLUS 1, not num_trust_addrs.
+	* prtunnel: Releasing 0.1.1 due to dumb typo described above; it's
+	  not a big deal though, so this is definitely just a minor update.
+
+Sun Jan 05 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: s/htons/ntohs/ in the printf about connection attempts
+	  from non-trusted addresses.
+	* connect.c: Changed sizeof(struct sockaddr) to sizeof(sin) in the
+	  connect(2) call.
+
+Sat Jan 04 2003  Josh Beam  <josh@joshbeam.com>
+	* README: Make the description more similar with the ones on the
+	  website, freshmeat, etc.
+	* prtunnel: Other minor changes, and released version 0.1.0.
+
+Fri Jan 03 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, prtunnel.h: Added bitcheck to struct trusted_address and
+	  put it to use in the appropriate functions in proxy.c. Read the entry
+	  for the -T option in the man page to see what this does.
+	* documentation: Stuff about the trusted_address bitcheck.
+	* INSTALL: Added a reminder to read the man page, as it's pretty damn
+	  good compared to the --help message, which is getting crowded.
+	* proxy.c: Made the bind_to error message a bit more informative.
+
+Thu Jan 02 2003  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Removed the wait(2) error message in proxy_kill();
+	  it was rather pointless.
+	* proxy.c: Stuff to waitpid(2) for daemon child processes when they're
+	  done. Took a while to figure this one out.
+
+Wed Jan 01 2003  Josh Beam  <josh@joshbeam.com>
+	* main.c, proxy.c, prtunnel.h: Added struct trusted_address and
+	  put it to use a bit.
+	* proxy.c: Added some missing close(2) calls.
+	* main.c, proxy.c, prtunnel.h: Added the PRT_DAEMON flag and used it.
+	  See fw_proxy() in proxy.c for all of the scary accept(2) and fork(2)
+	  stuff.
+	* all the documentation: Document new features.
+
+Sun Dec 29 2002  Josh Beam  <josh@joshbeam.com>
+	* proxy.c: Fixed up print_data a little; it's now a bit easier to
+	  differentiate between incoming/outgoing non-color output.
+	* prtunnel.1: s/MISC/WEBSITE/, since the only thing in that section
+	  is the URL; describe non-color verbose output a bit.
+	* README: Same stuff about non-color verbose output from man page.
+	* prtunnel: Released version 0.0.4.
+
+Thu Dec 26 2002  Josh Beam  <josh@joshbeam.com>
+	* proxy.c, http.c, socks5.c: Print all status messages to stderr instead
+	  of just the ones indicating failure.
+	* main.c, prtunnel.1, README: Make sure people know where to find the
+	  latest version.
+	* prtunnel: Released version 0.0.3.
+
+Wed Dec 25 2002  Josh Beam  <josh@joshbeam.com>
+	* prtunnel.1: That's right, I wrote a man page! Merry Christmas!
+	* Makefile: install/uninstall the man page.
+
+Tue Dec 24 2002  Josh Beam  <josh@joshbeam.com>
+	* socks5.c: Added SOCKS5 username/password authentication support.
+	* socks5.c: Fixed possible buffer overflow with the hostname memcpy.
+	* http.c, socks5.c: Added some more informative error messages.
+	* proxy.c: usleep(500) before killing the processes. See the comments
+	  before the first usleep to see why; not a big deal.
+	* proxy.c: fflush at the end of print_data.
+	* prtunnel: Released version 0.0.2.

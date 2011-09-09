@@ -1,0 +1,11 @@
+To build and install, just run:
+
+make
+make install
+
+The prtunnel binary will be installed to /usr/local/bin/prtunnel by default.
+If you want a prefix other than /usr/local, change the PREFIX in the Makefile.
+To compile prtunnel without IPv6 support, you must comment out or remove the
+"CFLAGS+= -DIPV6" line in the Makefile.
+
+Read the man page (`man prtunnel') for information on using it.
